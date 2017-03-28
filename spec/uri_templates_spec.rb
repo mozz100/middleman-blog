@@ -26,6 +26,15 @@ describe 'Middleman::Blog::UriTemplates' do
     it "can handle numbers" do
       expect(safe_parameterize(1)).to eq('1')
     end
+
+    it "can handle multi-char transliterations" do
+      expect(safe_parameterize('Große Welt')).to  eq('grosse-welt')
+      # TODO: how is safe_parameterize supposed to handle question marks?
+      expect(safe_parameterize('Große Welt?')).to eq('grosse-welt?')
+      expect(safe_parameterize('tændʒoʊ')).to     eq('taendʒoʊ')
+      expect(safe_parameterize('tændʒoʊ!')).to    eq('taendʒoʊ')
+    end
+
   end
 
   describe 'extract_params' do

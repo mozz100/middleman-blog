@@ -49,12 +49,15 @@ module Middleman
         sep = '-'
 
         # Reimplementation of http://api.rubyonrails.org/classes/ActiveSupport/Inflector.html#method-i-parameterize that preserves un-transliterate-able multibyte chars.
-        parameterized_string = ActiveSupport::Inflector.transliterate(str.to_s).downcase
-        parameterized_string.gsub!(/[^a-z0-9\-_\?]+/, sep)
+        parameterized_string = ''
+        str.to_s.chars.to_a.each_with_index do |char, i|
+          replacement_char = ActiveSupport::Inflector.transliterate(char).downcase
+          replacement_char.gsub!(/[^a-z0-9\-_\?]+/, sep)
 
-        parameterized_string.chars.to_a.each_with_index do |char, i|
-          if char == '?' && str[i].bytes.count != 1
-            parameterized_string[i] = str[i]
+          if replacement_char == '?' && char.bytes.count != 1
+            parameterized_string += char
+          else
+            parameterized_string += replacement_char
           end
         end
 
